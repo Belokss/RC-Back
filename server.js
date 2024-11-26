@@ -12,15 +12,15 @@ const app = express();
 app.use(express.json());
 
 const db = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: process.env.DB_PASSWORD,
-    database: 'autoservice_db',
+    host: process.env.MYSQLHOST,            // Используем переменные окружения от Railway
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
@@ -449,7 +449,7 @@ app.delete('/api/parts', async (req, res) => {
     }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Сервер запущен на порту ${PORT}`);
 });

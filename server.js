@@ -14,8 +14,8 @@ app.use(cors()); // Перенесено после инициализации a
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,            // Используем переменные окружения от Railway
     user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
+    password: process.env.MYSQL_ROOT_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
     port: process.env.MYSQLPORT,
     waitForConnections: true,
     connectionLimit: 10,

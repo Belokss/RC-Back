@@ -1,16 +1,16 @@
-// server.js
-
 const express = require('express');
 const mysql = require('mysql2/promise');
 const axios = require('axios');
 const multer = require('multer');
 const fs = require('fs');
 const FormData = require('form-data');
-require('dotenv').config({ path: './api.env' });
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors()); // Перенесено после инициализации app
 
+// Настройка соединения с базой данных
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,            // Используем переменные окружения от Railway
     user: process.env.MYSQLUSER,
@@ -21,6 +21,8 @@ const db = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 });
+
+// Настройка хранилища для multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
@@ -32,6 +34,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Создание папки uploads, если ее нет
 if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
 }
@@ -293,13 +296,9 @@ Prasības:
 4. **Neizdomājiet datus**, kas nav norādīti komandā.
 5. Ja darbība nav skaidri norādīta komandā, pieņemiet darbību "add".
 6. Centieties saprast automobiļu terminus, iespējams, ka tiek pieminētas populāras automašīnu markas un detaļas.
-7. Atbildei jābūt stingri JSON formātā, bez papildu teksta vai komentāriem.
+7. Atbildeи jābūt stingri JSON формātā, без папилду текста или коментариеem.
 
-Priekšlikums:
-
-Pievienojiet zināšanas par populārām automašīnu markām un detaļām, lai modelis varētu labāk interpretēt iespējamos kļūdainus transkripcijas rezultātus.
-
-Piemērs atbildei:
+Пример ответа:
 
 {
   "changes": [
@@ -449,6 +448,7 @@ app.delete('/api/parts', async (req, res) => {
     }
 });
 
+// Запуск сервера
 const PORT = process.env.PORT || 5000;
 
 (async () => {
@@ -460,8 +460,7 @@ const PORT = process.env.PORT || 5000;
         console.error('Ошибка подключения к базе данных:', error.message);
     }
 
-    // Запуск сервера
     app.listen(PORT, () => {
         console.log(`Сервер запущен на порту ${PORT}`);
     });
-});
+})();

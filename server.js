@@ -450,6 +450,18 @@ app.delete('/api/parts', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Сервер запущен на порту ${PORT}`);
+
+(async () => {
+    try {
+        // Проверка подключения к базе данных
+        const [rows] = await db.query('SELECT 1');
+        console.log('Успешное подключение к базе данных');
+    } catch (error) {
+        console.error('Ошибка подключения к базе данных:', error.message);
+    }
+
+    // Запуск сервера
+    app.listen(PORT, () => {
+        console.log(`Сервер запущен на порту ${PORT}`);
+    });
 });
